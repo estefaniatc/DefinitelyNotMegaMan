@@ -38,7 +38,7 @@ public class MegaManMain {
 		InputHandler inputHandler = new InputHandler(); 		// Keyboard listener
 		GraphicsManager graphicsMan = new GraphicsManager(); // Draws all graphics for game objects
 		SoundManager soundMan = new SoundManager();			// Loads and plays all sounds during the game
-
+		
 		audioFile = new File("audio/menuScreen.wav");
 		try {
 			audioStream = AudioSystem.getAudioInputStream(audioFile);
@@ -56,11 +56,12 @@ public class MegaManMain {
 			gameStatus.setLivesLeft(3);
 			LevelState level1State = new Level1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState level2State = new Level2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-			LevelState levels[] = { level1State, level2State };
-
+			LevelState level3State = new Level3State(3, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState levels[] = { level1State, level2State, level3State};
+			
 			String outcome = "CONGRATS!! YOU WON!!";
 			for (LevelState nextLevel : levels) {
-
+			
 				System.out.println("Next Level Started");
 				frame.setLevelState(nextLevel);
 				gameLogic.setLevelState(nextLevel);
@@ -69,12 +70,14 @@ public class MegaManMain {
 				
 				frame.setVisible(true);  // TODO verify whether this is necessary
 				startInitialMusic();
+				
+				System.out.println(nextLevel.getLevel());
 
 				// init main game loop
 				Thread nextLevelLoop = new Thread(new LevelLoop(nextLevel));
 				nextLevelLoop.start();
 				nextLevelLoop.join();
-
+					
 				if (nextLevel.getGameStatus().isGameOver()) {
 					outcome = "SORRY YOU LOST";
 					break;
